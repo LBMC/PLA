@@ -1,0 +1,9 @@
+macro "LIPID_DROPLETS"{
+Path = getDirectory("macros")+File.separator();
+Path += "PLA"+File.separator();
+Path += "Main.java";
+
+runMacro(Path);
+}
+
+//END OF PLA
