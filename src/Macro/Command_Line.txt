@@ -1,4 +1,4 @@
-macro "LIPID_DROPLETS"{
+macro "PLA"{
 Path = getDirectory("macros")+File.separator();
 Path += "PLA"+File.separator();
 Path += "Main.java";
