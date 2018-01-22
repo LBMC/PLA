@@ -24,7 +24,10 @@ PathFolderInput =File.directory+File.separator+"Macro"+File.separator;
 PathOutput = getDirectory("macros")+"PLA"+File.separator;
 
 //Listing of the files to instal
-Listing = newArray("Main.java");
+    Listing = newArray("Main.java",
+                        "Close_Images.java",
+                        "Treat_DAPI.java",
+                        "Treat_RFP.java");
 
 //Create the installation folder if required
 if(File.exists(PathOutput)==0){
