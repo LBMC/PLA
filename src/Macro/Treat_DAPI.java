@@ -136,5 +136,5 @@ macro "Treat_DAPI"{
     PathNUCset = OUTFolder;
     PathNUCset += myImageName + "_Nuclei.zip";
     roiManager("Save", PathNUCset);
-
+    
 }//END MACRO

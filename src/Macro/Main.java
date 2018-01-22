@@ -23,6 +23,10 @@ macro "Main"{
     MaxSizeSingle = 15000
     MinCircSingle = 0.3;
 
+    //Parameters for PLA
+    MinSizePLA = 5;
+    MaxSizePLA = "Infinity"
+
 /*
 ===============================================================================
                     PREPARATION OF IMAGEJ ENVIRONMENT
@@ -85,6 +89,7 @@ macro "Main"{
     open(myFolder + myImageName +ExtRFP);
     //Rename for easy handeling of the image
     rename("RFP");
+    run("Duplicate...", "title=RFP2");
     run("Duplicate...", "title=RFPori");
 
 //Process the DAPI image
@@ -101,48 +106,20 @@ macro "Main"{
 
 //Process the RFP image
 
-    /*
-        EVERYTHING CONCERNING PLA DETECTION
-    */
+    ARG2 = OUTFolder + "\t";
+    ARG2 += myImageName + "\t";
+    ARG2 += "" + MinSizePLA + "\t";
+    ARG2 += "" + MaxSizePLA + "\t";
 
-    //Restore RFP image and make it Red and RGB
-    selectWindow("RFP");
-    resetThreshold();
-    run("Red");
-    run("RGB Color");
+    runMacro(PathMACRO + "Treat_RFP.java",
+                ARG2);
 
-
-    //Draw all nuclei on RFP
-    for(nucleus=0;
-        nucleus<roiManager("count");
-        nucleus++){
-
-        selectWindow("RFP");
-        roiManager("Select", nucleus);
-        /*
-            Fitting with "Fit Elipse" does not give better results...
-            2018/01/22
-        */
-        roiManager("Rename", "NUCLEUS " + (nucleus+1));
-
-        //Get an index between 0-9 whatever value
-        index = ((nucleus / 10) - floor(nucleus / 10)) * 10;
-
-        //Get the corresponding Cmap value (RGB)
-        setForegroundColor(CmapR[index],
-                            CmapG[index],
-                            CmapB[index]);
-
-        //Draw the nucleus on DAPI
-        run("Line Width...", "line=2");
-        run("Draw");
-    }
-
+//Save OUTPUT files
 
     //Create image Bilan and save it
     imageCalculator("Average create",
                     "DAPI",
-                    "RFP");
+                    "RFP2");
     PathBILAN = OUTFolder;
     PathBILAN += myImageName + "_Bilan.jpg";
     saveAs("Jpeg", PathBILAN);
@@ -155,7 +132,7 @@ macro "Main"{
 
 
     //Save the RFP image
-    selectWindow("RFP");
+    selectWindow("RFP2");
     PathRFP = OUTFolder;
     PathRFP += myImageName + "_PLA.jpg";
     saveAs("Jpeg", PathRFP);
@@ -169,8 +146,7 @@ macro "Main"{
     saveAs("Jpeg", PathORI);
 
     //Close All images
-
-
+    runMacro(PathMACRO + "Close_Images.java");
 
 
 
