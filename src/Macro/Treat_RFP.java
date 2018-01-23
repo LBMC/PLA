@@ -88,6 +88,7 @@ macro "Treat_RFP"{
         //Threshold the image with the pixel values of the current nucleus
         roiManager("Select", nRoi);
         setAutoThreshold("Moments dark");
+        //setAutoThreshold("IsoData dark");
 
         //Find all PLA labbelling
         CMD1 = "size=" + MinSizePLA + "-" + MaxSizePLA;
@@ -106,7 +107,7 @@ macro "Treat_RFP"{
         for (pla = nRoi + 1; pla < roiManager("count"); pla++){
             nPLA += 1;
             roiManager("Select", pla);
-            roiManager("Rename", "   PLA " + nPLA);
+            roiManager("Rename", "   PLA " + nPLA + " N" + infos[1]);
             run("Draw");
         }
 
