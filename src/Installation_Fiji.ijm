@@ -23,12 +23,12 @@ PathSUM = getDirectory("macros")+File.separator+"StartupMacros.fiji.ijm";
 PathFolderInput =File.directory+File.separator+"Macro"+File.separator;					
 PathOutput = getDirectory("macros")+"PLA"+File.separator;
 
-    //Listing of the files to instal
     Listing = newArray("Main.java",
                         "Close_Images.java",
                         "Treat_DAPI.java",
                         "Treat_RFP.java",
-                        "GUI.java");
+                        "GUI.java",
+                        "Explorer.java");
 
     //Protect settings
     if(File.exists(PathOutput+"Settings.txt")==0){

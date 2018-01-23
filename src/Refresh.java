@@ -15,7 +15,8 @@ macro "Refresh" {
                         "Close_Images.java",
                         "Treat_DAPI.java",
                         "Treat_RFP.java",
-                        "GUI.java");
+                        "GUI.java",
+                        "Explorer.java");
 
     //Protect settings
     if(File.exists(PathOutput+"Settings.txt")==0){

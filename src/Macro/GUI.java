@@ -106,37 +106,58 @@ macro "GUI"{
                 PathFolderInput + myAnalysis);
 
     myText = File.openAsString(PathFolderInput + myAnalysis);
-    print(myText);
 
-    /*
+    //Detect all valid FILES
+    ARG1 = PathFolderInput + "\t";
+    ARG1 += ExtDAPI + "\t";
+    ARG1 += ExtRFP + "\t";
+    ARG1 += PathFolderInput + myAnalysis;
 
-        MACRO DETECTION
+    runMacro(PathMACRO + "Explorer.java",
+                ARG1);
 
-    */
-
-
-
-
-
-
-    Segments = split(myText, "*");
-    print(Segments[Segments.length-1]);
+    //Extract the Files Names
+    ResExplorer = File.openAsString(PathFolderInput + myAnalysis);
+    Segments = split(ResExplorer, "*");
     myFiles = split(Segments[Segments.length-1],"\n");
+
     //Due to \n added by append, first file is on index 1
+    NameFiles = newArray();
+    for (i=1; i<myFiles.length; i++){
+        currentF = File.getName(myFiles[i]);
+        currentF = replace(currentF, ExtDAPI, "");
+        NameFiles = Array.concat(NameFiles, currentF);
+    }
 
+    myChoices = newArray("Keep my original settings",
+                            "Update my settings");
 
-
-
+    //Display the result of the research and propose to update parameters
+    Dialog.create("DETECTED FILES");
+    MSG = "" + (myFiles.length-1) + " files have been detected.\n";
+    MSG += "See listing below:";
+    Dialog.addMessage(MSG);
+    Dialog.addChoice("Files:", NameFiles, NameFiles[0]);
 
     if (newP != P){
-        MSG = "Your settings are differents from Settings.txt" +"\n";
-        MSG = "The File will be Updated.";
-        waitForUser(MSG);
+        MSG1 = "Your settings are differents from Settings.txt" +"\n";
+        MSG1 += "Choose the below update option to definitively\n";
+        MSG1 += "change the Settings.txt file.\n\n";
+        MSG1 += "The current modified settings will be used anyway for this analysis."
+        Dialog.addMessage(MSG1);
+        Dialog.addChoice("", myChoices, myChoices[0]);
+    }
+    Dialog.show();
 
-        mySettings = File.open(PathMACRO + "Settings.txt");
-        print(mySettings, newP);
-        File.close(mySettings)
-
+    fileN = Dialog.getChoice();
+    if (newP != P){
+        option = Dialog.getChoice();
+        if (option == "Update my settings"){
+            //Update the SEttings.txt file for next analysis.
+            mySettings = File.open(PathMACRO + "Settings.txt");
+            print(mySettings, newP);
+            File.close(mySettings);
+        }
     }
 
 /*

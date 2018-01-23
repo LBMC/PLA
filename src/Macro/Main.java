@@ -93,97 +93,105 @@ macro "Main"{
 ===============================================================================
 */
 
-    //Choose image file
-    //This will be replaced by automated detection and a loop will be generated
-    Path = File.openDialog("Choose file");
+    //Extract the Files Names
+    ResExplorer = File.openAsString(PathFolderInput + myAnalysis);
+    Segments = split(ResExplorer, "*");
+    myFiles = split(Segments[Segments.length-1],"\n");
 
-    //Get the parent path
-    myFolder = File.getParent(Path) + File.separator();
+    //Loop of analysis of ALL images
+    for (im=1; im<myFiles.length; im++){
 
-    //Get image name without extension
-    myImageName = replace(File.getName(Path), ExtDAPI, "");
+        //Path of the current image
+        Path = myFiles[im];
 
-    //Create ouput folder
-    OUTFolder= myFolder;
-    OUTFolder += FP + "ANALYSIS_";
-    OUTFolder += myImageName + File.separator();
-    if (File.exists(OUTFolder)==0){
-        File.makeDirectory(OUTFolder);
-    }
+        //Get the parent path
+        myFolder = File.getParent(Path) + File.separator();
+
+        //Get image name without extension
+        myImageName = replace(File.getName(Path), ExtDAPI, "");
+
+        //Create ouput folder
+        OUTFolder = myFolder;
+        OUTFolder += FP + "ANALYSIS_";
+        OUTFolder += myImageName + File.separator();
+        if (File.exists(OUTFolder)==0){
+            File.makeDirectory(OUTFolder);
+        }
+
+        //Open the current DAPI image to be treated
+        open(Path);
+        //Rename for easy handeling of the image
+        rename("DAPI");
+        run("Duplicate...", "title=DAPIori");
+
+        //Get the image properties
+        W = getWidth();
+        H = getHeight();
+
+        //Open the corresponding RFP image
+        open(myFolder + myImageName +ExtRFP);
+        //Rename for easy handeling of the image
+        rename("RFP");
+        run("Duplicate...", "title=RFP2");
+        run("Duplicate...", "title=RFPori");
+
+    //Process the DAPI image
+
+        ARG1 = OUTFolder + "\t";
+        ARG1 += myImageName + "\t";
+        ARG1 += "" + MinSize + "\t";
+        ARG1 += "" + MaxSize + "\t";
+        ARG1 += "" + MaxSizeSingle + "\t";
+        ARG1 += "" + MinCircSingle;
+
+        runMacro(PathMACRO + "Treat_DAPI.java",
+                    ARG1);
+
+    //Process the RFP image
+
+        ARG2 = OUTFolder + "\t";
+        ARG2 += myImageName + "\t";
+        ARG2 += "" + MinSizePLA + "\t";
+        ARG2 += "" + MaxSizePLA + "\t";
+
+        runMacro(PathMACRO + "Treat_RFP.java",
+                    ARG2);
+
+    //Save OUTPUT files
+
+        //Create image Bilan and save it
+        imageCalculator("Average create",
+                        "DAPI",
+                        "RFP2");
+        PathBILAN = OUTFolder;
+        PathBILAN += myImageName + "_Bilan.jpg";
+        saveAs("Jpeg", PathBILAN);
+
+        //Save the DAPI image
+        selectWindow("DAPI");
+        PathDAPI = OUTFolder;
+        PathDAPI += myImageName + "_Nuclei.jpg";
+        saveAs("Jpeg", PathDAPI);
 
 
-    //Open the current DAPI image to be treated
-    open(Path);
-    //Rename for easy handeling of the image
-    rename("DAPI");
-    run("Duplicate...", "title=DAPIori");
+        //Save the RFP image
+        selectWindow("RFP2");
+        PathRFP = OUTFolder;
+        PathRFP += myImageName + "_PLA.jpg";
+        saveAs("Jpeg", PathRFP);
 
-    //Get the image properties
-    W = getWidth();
-    H = getHeight();
+        //Create image Original and save it
+        imageCalculator("Average create",
+                        "DAPIori",
+                        "RFPori");
+        PathORI = OUTFolder;
+        PathORI += myImageName + "_Original.jpg";
+        saveAs("Jpeg", PathORI);
 
-    //Open the corresponding RFP image
-    open(myFolder + myImageName +ExtRFP);
-    //Rename for easy handeling of the image
-    rename("RFP");
-    run("Duplicate...", "title=RFP2");
-    run("Duplicate...", "title=RFPori");
+        //Close All images
+        runMacro(PathMACRO + "Close_Images.java");
 
-//Process the DAPI image
-
-    ARG1 = OUTFolder + "\t";
-    ARG1 += myImageName + "\t";
-    ARG1 += "" + MinSize + "\t";
-    ARG1 += "" + MaxSize + "\t";
-    ARG1 += "" + MaxSizeSingle + "\t";
-    ARG1 += "" + MinCircSingle;
-
-    runMacro(PathMACRO + "Treat_DAPI.java",
-                ARG1);
-
-//Process the RFP image
-
-    ARG2 = OUTFolder + "\t";
-    ARG2 += myImageName + "\t";
-    ARG2 += "" + MinSizePLA + "\t";
-    ARG2 += "" + MaxSizePLA + "\t";
-
-    runMacro(PathMACRO + "Treat_RFP.java",
-                ARG2);
-
-//Save OUTPUT files
-
-    //Create image Bilan and save it
-    imageCalculator("Average create",
-                    "DAPI",
-                    "RFP2");
-    PathBILAN = OUTFolder;
-    PathBILAN += myImageName + "_Bilan.jpg";
-    saveAs("Jpeg", PathBILAN);
-
-    //Save the DAPI image
-    selectWindow("DAPI");
-    PathDAPI = OUTFolder;
-    PathDAPI += myImageName + "_Nuclei.jpg";
-    saveAs("Jpeg", PathDAPI);
-
-
-    //Save the RFP image
-    selectWindow("RFP2");
-    PathRFP = OUTFolder;
-    PathRFP += myImageName + "_PLA.jpg";
-    saveAs("Jpeg", PathRFP);
-
-    //Create image Original and save it
-    imageCalculator("Average create",
-                    "DAPIori",
-                    "RFPori");
-    PathORI = OUTFolder;
-    PathORI += myImageName + "_Original.jpg";
-    saveAs("Jpeg", PathORI);
-
-    //Close All images
-    runMacro(PathMACRO + "Close_Images.java");
+    }//END LOOP OF ANALYSIS
 
 
 /*
