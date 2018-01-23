@@ -1,0 +1,4 @@
+Minimum Surface for initial nuclei detection=5000
+Maximum Surface for initial nuclei detection=Infinity
+Maximum Surface of a single nucleus=15000
+Minimum Circularity of single nucleus=0.3

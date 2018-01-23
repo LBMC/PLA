@@ -14,7 +14,16 @@ macro "Refresh" {
     Listing = newArray("Main.java",
                         "Close_Images.java",
                         "Treat_DAPI.java",
-                        "Treat_RFP.java");
+                        "Treat_RFP.java",
+                        "GUI.java");
+
+    //Protect settings
+    if(File.exists(PathOutput+"Settings.txt")==0){
+        Transfer=File.copy(PathFolderInput+"Settings.txt",
+                            PathOutput+"Settings.txt");
+    }else{
+        waitForUser("Your setting file has been protected!");
+    }
 
     //Create the installation folder if required
     if(File.exists(PathOutput)==0){
@@ -26,7 +35,8 @@ macro "Refresh" {
     	if(File.exists(PathFolderInput+Listing[i])==0){
         	exit("" + PathFolderInput+Listing[i] + " file is missing");
     	}else{
-			Transfer=File.copy(PathFolderInput+Listing[i], PathOutput+Listing[i]);
+			Transfer=File.copy(PathFolderInput+Listing[i],
+                                PathOutput+Listing[i]);
 		}
 	}
 

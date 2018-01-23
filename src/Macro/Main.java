@@ -6,14 +6,6 @@ macro "Main"{
 ===============================================================================
 */
 
-    //Color map for drawing
-    //Red
-    CmapR = newArray(31, 255, 44, 214, 148, 140, 227, 127, 188, 23);
-    //Green
-    CmapG = newArray(119, 127, 160, 39, 103, 86, 119, 127, 189, 190);
-    //Blue
-    CmapB = newArray(180, 14, 44, 40, 189, 75, 194, 127, 34, 207);
-
     //Path of the folder containing all scripts
     PathMACRO = getDirectory("macros")+"PLA"+File.separator;
 
@@ -27,11 +19,20 @@ macro "Main"{
     MinSizePLA = 5;
     MaxSizePLA = "Infinity"
 
+    //Extensions for file recognition
+    ExtDAPI = "_w1DAPI.TIF";
+    ExtRFP = "_w2RFP.TIF";
+
 /*
 ===============================================================================
                     PREPARATION OF IMAGEJ ENVIRONMENT
 ===============================================================================
 */
+
+    /*
+        WELCOME AND SO
+    */
+
 
     //Close all remaining images
     PathM1 = getDirectory("macros");
@@ -42,13 +43,13 @@ macro "Main"{
     //Remove all existing ROI
     roiManager("reset");
 
+    //Retrieve folder to explore
+
+    getDirectory(myTitle);
     /*
         MACRO GUI
         MACRO FOR AUTOMATED DETECTION
     */
-
-    ExtDAPI = "_w1DAPI.TIF";
-    ExtRFP = "_w2RFP.TIF";
 
 /*
 ===============================================================================
