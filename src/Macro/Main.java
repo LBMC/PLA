@@ -28,10 +28,11 @@ macro "Main"{
 ===============================================================================
 */
 
+    setBatchMode(true);
+
     /*
         WELCOME AND SO
     */
-
 
     //Close all remaining images
     PathM1 = getDirectory("macros");
@@ -197,6 +198,7 @@ macro "Main"{
 
     }//END LOOP OF ANALYSIS
 
+    waitForUser("PLA analysis is over.");
 
 /*
 ===============================================================================
@@ -210,7 +212,5 @@ function getParm(Params, index, what){
     //Return the value [1] or the description of the variable [0]
     return infos[what];
 }
-
-
 
 }//END MACRO
