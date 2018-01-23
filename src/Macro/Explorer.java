@@ -23,7 +23,7 @@ function listFiles(folder, extension1, extension2) {
 	list = getFileList(folder);
 	for (i=0; i<list.length; i++) {
         if (File.isDirectory(folder+list[i])){
-           	listFiles(""+folder+list[i], extension);
+           	listFiles(""+folder+list[i], extension1, extension2);
        	}
 
 		if (endsWith(list[i], extension1)){

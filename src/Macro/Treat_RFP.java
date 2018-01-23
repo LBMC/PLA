@@ -7,6 +7,8 @@ macro "Treat_RFP"{
     myImageName = Arguments[1];
     MinSizePLA = parseFloat(Arguments[2]);
     MaxSizePLA = parseFloat(Arguments[3]);
+    PathReport = Arguments[4];
+
 
     //Color map for drawing
     //Red
@@ -54,6 +56,16 @@ macro "Treat_RFP"{
         roiManager("Open", PathNUCset);
         roiManager("Select", nucleus);
         myNucleusName = Roi.getName();
+        List.setMeasurements;
+        SN = List.getValue("Area");
+
+        //Update Report
+        myInfo = ""+ "\t" + myNucleusName + "\t";
+        myInfo += "" + SN + "\t" + "FOCI" + "\t" + "SURF" + "\t" + "PERC";
+
+        File.append(myInfo,
+                   PathReport);
+
         infos = split(myNucleusName, " ");
         index = parseFloat(infos[1]) - 1;
 
@@ -104,17 +116,38 @@ macro "Treat_RFP"{
         run("Draw");
 
         nPLA = 0;
+        STot = 0;
         for (pla = nRoi + 1; pla < roiManager("count"); pla++){
             nPLA += 1;
             roiManager("Select", pla);
+            List.setMeasurements;
+            S = List.getValue("Area");
+            STot += S;
+            Perc = d2s(100*(S/SN), 2);
+            NomPLA = "PLA " + nPLA;
+
+            //Update Report
+            File.append("\t\t\t" + NomPLA + "\t" + S + "\t" + Perc,
+                       PathReport);
+
             roiManager("Rename", "   PLA " + nPLA + " N" + infos[1]);
             run("Draw");
         }
+        PercTot = d2s(100*(STot/SN), 2);
 
         //Save new ROI
         roiManager("Save", PathPLAset);
         roiManager("Reset");
 
+        //Update the Nucleus line
+        myReport = File.openAsString(PathReport);
+        myReport = replace(myReport, "SURF", "" + STot);
+        myReport = replace(myReport, "FOCI", "" + nPLA);
+        myReport = replace(myReport, "PERC", "" + PercTot);
+        f = File.open(PathReport);
+        File.close(f);
+        File.append(myReport,
+                   PathReport);
     }
 
     /*

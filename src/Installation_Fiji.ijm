@@ -15,12 +15,12 @@ Errors=0;
 Dialog.create("Installation wizard for the Lipid_Droplets macro");
 Dialog.addMessage("Version\n" + version);
 Dialog.addMessage("Cluet David\nResearch Ingeneer,PHD\nCNRS, ENS-Lyon, LBMC");
-Dialog.addMessage("This program will install the Lipid_Droplets macro.\nShortcut will be added in the Plugins/Macros menu.");
+Dialog.addMessage("This program will install the PLA macro.\nShortcut will be added in the Plugins/Macros menu.");
 Dialog.show();
 
 //Prepare key paths
 PathSUM = getDirectory("macros")+File.separator+"StartupMacros.fiji.ijm";	
-PathFolderInput =File.directory+File.separator+"Macro"+File.separator;					
+PathFolderInput =File.directory+"Macro"+File.separator;					
 PathOutput = getDirectory("macros")+"PLA"+File.separator;
 
     Listing = newArray("Main.java",
@@ -30,18 +30,17 @@ PathOutput = getDirectory("macros")+"PLA"+File.separator;
                         "GUI.java",
                         "Explorer.java");
 
-    //Protect settings
-    if(File.exists(PathOutput+"Settings.txt")==0){
-        Transfer=File.copy(PathFolderInput+"Settings.txt",
-                            PathOutput+"Settings.txt");
-    }else{
-        waitForUser("Your setting file has been protected!");
-    }
-
 //Create the installation folder if required
 if(File.exists(PathOutput)==0){
 File.makeDirectory(getDirectory("macros")+File.separator+"PLA");
 }
+
+    //Protect settings
+    if(File.exists(PathOutput+"Settings.txt")==0){
+        Transfer=File.copy(PathFolderInput+"Settings.txt", PathOutput+"Settings.txt");
+    }else{
+        waitForUser("Your setting file has been protected!");
+    }
 
 //Installation of all files of the listing
 for(i=0; i<lengthOf(Listing); i++){

@@ -28,7 +28,7 @@ macro "Main"{
 ===============================================================================
 */
 
-    setBatchMode(true);
+    //setBatchMode(true);
 
     /*
         WELCOME AND SO
@@ -103,6 +103,17 @@ macro "Main"{
     Segments = split(ResExplorer, "*");
     myFiles = split(Segments[Segments.length-1],"\n");
 
+    //Create Report File
+    f = File.open(PathFolderInput + myResults);
+    File.close(f);
+    header = "File" + "\t";
+    header += "Nuclei" + "\t";
+    header += "Surface" + "\t";
+    header += "PLA foci" + "\t";
+    header += "Surface PLA" + "\t";
+    header += "% of Nucleus surface\n";
+    File.append(header, PathFolderInput + myResults);
+
     //Loop of analysis of ALL images
     for (im=1; im<myFiles.length; im++){
 
@@ -114,6 +125,9 @@ macro "Main"{
 
         //Get image name without extension
         myImageName = replace(File.getName(Path), ExtDAPI, "");
+
+        //Update Report
+        File.append(myImageName, PathFolderInput + myResults);
 
         //Create ouput folder
         OUTFolder = myFolder;
@@ -158,6 +172,7 @@ macro "Main"{
         ARG2 += myImageName + "\t";
         ARG2 += "" + MinSizePLA + "\t";
         ARG2 += "" + MaxSizePLA + "\t";
+        ARG2 += PathFolderInput + myResults;
 
         runMacro(PathMACRO + "Treat_RFP.java",
                     ARG2);
@@ -196,7 +211,14 @@ macro "Main"{
         //Close All images
         runMacro(PathMACRO + "Close_Images.java");
 
+        //Add empty line in the Report
+        File.append("", PathFolderInput + myResults);
+
     }//END LOOP OF ANALYSIS
+
+    //Convert txt to csv
+    Conv = File.rename(PathFolderInput + myResults,
+                        PathFolderInput + FP + "Results.csv");
 
     waitForUser("PLA analysis is over.");
 
