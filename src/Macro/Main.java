@@ -58,6 +58,10 @@ macro "Main"{
     FP = "" + year + "-" + month + "-" + dayOfMonth + "_";
     FP += "" + hour + "-" + minute + "_";
 
+    //Created text Files
+    myAnalysis = "" + FP + "Parameters_and_Files.txt";
+    myResults = "" + FP + "Results.txt";
+
     //Launch the GUI
     ARG0 = PathFolderInput + "\t";
     ARG0 += FP;

@@ -143,7 +143,7 @@ macro "GUI"{
         MSG1 = "Your settings are differents from Settings.txt" +"\n";
         MSG1 += "Choose the below update option to definitively\n";
         MSG1 += "change the Settings.txt file.\n\n";
-        MSG1 += "The current modified settings will be used anyway for this analysis."
+        MSG1 += "The current modified settings will be used anyway for this analysis.";
         Dialog.addMessage(MSG1);
         Dialog.addChoice("", myChoices, myChoices[0]);
     }
