@@ -9,19 +9,18 @@ macro "Main"{
     //Path of the folder containing all scripts
     PathMACRO = getDirectory("macros")+"PLA"+File.separator;
 
-    //Parameters of the nuclei
-    MinSize = 5000;
-    MaxSize = "Infinity";
-    MaxSizeSingle = 15000
-    MinCircSingle = 0.3;
-
-    //Parameters for PLA
-    MinSizePLA = 5;
-    MaxSizePLA = "Infinity"
-
-    //Extensions for file recognition
-    ExtDAPI = "_w1DAPI.TIF";
-    ExtRFP = "_w2RFP.TIF";
+    /*
+        ALL KEY PARAMETERS ARE IN settings.txt File
+        ORIGINAL VALUES:
+        Minimum Surface for initial nuclei detection =5000
+        Maximum Surface for initial nuclei detection =Infinity
+        Maximum Surface of a single nucleus =15000
+        Minimum Circularity of single nucleus =0.3
+        Minimum Surface for PLA foci =5
+        Maximum Surface for PLA foci =Infinity
+        Extension of DAPI images =_w1DAPI.TIF
+        Extension of PLA images =_w2RFP.TIF
+    */
 
 /*
 ===============================================================================
@@ -44,12 +43,49 @@ macro "Main"{
     roiManager("reset");
 
     //Retrieve folder to explore
+    myTitle = "PLEASE CHOOSE THE FOLDER CONTAINING THE FILES TO PROCESS"
+    PathFolderInput = getDirectory(myTitle);
 
-    getDirectory(myTitle);
-    /*
-        MACRO GUI
-        MACRO FOR AUTOMATED DETECTION
-    */
+    //Generate Finger Print
+    getDateAndTime(year,
+                    month,
+                    dayOfWeek,
+                    dayOfMonth,
+                    hour,
+                    minute,
+                    second,
+                    msec);
+    FP = "" + year + "-" + month + "-" + dayOfMonth + "_";
+    FP += "" + hour + "-" + minute + "_";
+
+    //Launch the GUI
+    ARG0 = PathFolderInput + "\t";
+    ARG0 += FP;
+    runMacro(PathMACRO + "GUI.java",
+                ARG0);
+
+    //Retrrieve the updated (if so) Parameters in the SEttings.txt file
+    P = File.openAsString(PathMACRO+"Settings.txt");
+    //Create Array of lines
+    Params = split(P, "\n");
+
+    //Get all single parmaters
+    MinSize = parseFloat(getParm(Params, 0, 1));
+    MaxSize = getParm(Params, 1, 1);
+    if (MaxSize!="Infinity"){
+        MaxSize = parseFloat(MaxSize);
+    }
+    MaxSizeSingle = parseFloat(getParm(Params, 2, 1));
+    MinCircSingle = parseFloat(getParm(Params, 3, 1));
+    MinSizePLA = parseFloat(getParm(Params, 4, 1));
+    MaxSizePLA = getParm(Params, 5, 1);
+    if (MaxSizePLA!="Infinity"){
+        MaxSizePLA = parseFloat(MaxSizePLA);
+    }
+    ExtDAPI = getParm(Params, 6, 1);
+    ExtRFP = getParm(Params, 7, 1);
+
+
 
 /*
 ===============================================================================
@@ -69,7 +105,7 @@ macro "Main"{
 
     //Create ouput folder
     OUTFolder= myFolder;
-    OUTFolder += "ANALYSIS_";
+    OUTFolder += FP + "ANALYSIS_";
     OUTFolder += myImageName + File.separator();
     if (File.exists(OUTFolder)==0){
         File.makeDirectory(OUTFolder);
@@ -150,9 +186,18 @@ macro "Main"{
     runMacro(PathMACRO + "Close_Images.java");
 
 
+/*
+===============================================================================
+                            FUNCTIONS
+===============================================================================
+*/
 
-
-
+function getParm(Params, index, what){
+    //Split the line index of Settings.txt file at the "=" sign
+    infos = split(Params[index], "=");
+    //Return the value [1] or the description of the variable [0]
+    return infos[what];
+}
 
 
 
