@@ -28,7 +28,12 @@ macro "Main"{
 ===============================================================================
 */
 
-    //setBatchMode(true);
+    //Remove all existing ROI
+    //Done first to have the ROI Manger window open so open/save options
+    // work properly on FIJI on Batch Mode
+    roiManager("reset");
+
+    setBatchMode(true);
 
     /*
         WELCOME AND SO
@@ -40,8 +45,6 @@ macro "Main"{
     PathM1 += "Close_Images.java";
     runMacro(PathM1);
 
-    //Remove all existing ROI
-    roiManager("reset");
 
     //Retrieve folder to explore
     myTitle = "PLEASE CHOOSE THE FOLDER CONTAINING THE FILES TO PROCESS"

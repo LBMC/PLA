@@ -4,7 +4,7 @@ version = "1.0a 2018-01-17";
 
 
 //IJ version verification and close the macro's window 
-//selectWindow("Installation.ijm");			
+//selectWindow("Installation_Fiji.ijm");			
 //run("Close");						
 requires("1.49g");					
 
