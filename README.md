@@ -10,7 +10,7 @@ Automated Detection of PLA
 |-------------------------------------|-----------------------------------|
 |**ORIGINAL**   |**TREATED**   |
 
-The explore recursively a specific folder and treat all images with the correct extension (chosen by the user).
+The `PLA` macro explores recursively a specific folder and treat all images with the correct extension (chosen by the user).
 
 Input
 ---
