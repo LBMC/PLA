@@ -12,7 +12,7 @@ requires("1.49g");
 Errors=0;
 
 //GUI Message
-Dialog.create("Installation wizard for the Lipid_Droplets macro");
+Dialog.create("Installation wizard for the PLA macro");
 Dialog.addMessage("Version\n" + version);
 Dialog.addMessage("Cluet David\nResearch Ingeneer,PHD\nCNRS, ENS-Lyon, LBMC");
 Dialog.addMessage("This program will install the PLA macro.\nShortcut will be added in the Plugins/Macros menu.");

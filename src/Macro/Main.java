@@ -36,7 +36,7 @@ macro "Main"{
 
     //Close all remaining images
     PathM1 = getDirectory("macros");
-    PathM1 += "Droplets"+File.separator;
+    PathM1 += "PLA"+File.separator;
     PathM1 += "Close_Images.java";
     runMacro(PathM1);
 
