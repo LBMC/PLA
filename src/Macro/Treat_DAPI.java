@@ -132,9 +132,65 @@ macro "Treat_DAPI"{
         run("Draw");
     }
 
-    //Save the Nuclei ROIs
+
+    //Save the Nuclei ROIs as text
     PathNUCset = OUTFolder;
-    PathNUCset += myImageName + "_Nuclei.zip";
-    roiManager("Save", PathNUCset);
-    
+    PathNUCset += myImageName + "_Nuclei.txt";
+    ROIsave(PathNUCset, "append");
+
+/*
+===============================================================================
+                            FUNCTIONS
+===============================================================================
+*/
+
+function ROIsave(path, option){
+    /*
+        Recognized options:
+        -"overwrite"
+        -"append"
+
+        Structure of the roi:
+        "Name*X0;X1;...;Xn*Y0;Y1;...;Yn"
+    */
+
+    //create the file if not existing
+    if(File.exists(path)==0){
+        f = File.open(path);
+        File.close(f);
+    }
+
+    //clear the file if overwriting is ordered
+    if(option=="overwrite"){
+        f = File.open(path);
+        File.close(f);
+    }
+
+    //Loop of saving the ROIs
+    for(roi=0; roi<roiManager("count"); roi++){
+        roiManager("Select", roi);
+        Roi.getCoordinates(xpoints, ypoints);
+        Nom = Roi.getName();
+
+        //Convert coordinates arrays as a single string
+        X = "";
+        Y = "";
+
+        for(x=0; x<xpoints.length; x++){
+            X += "" + xpoints[x];
+            Y += "" + ypoints[x];
+
+            if(x!=xpoints.length-1){
+                X += ";";
+                Y += ";";
+            }
+        }
+
+        //Append the roi to the file
+        File.append(Nom + "*" + X + "*" + Y,
+                    path);
+    }
+}
+
+
 }//END MACRO

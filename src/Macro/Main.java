@@ -9,6 +9,9 @@ macro "Main"{
     //Path of the folder containing all scripts
     PathMACRO = getDirectory("macros")+"PLA"+File.separator;
 
+    //Version
+    version = "1.0";
+
     /*
         ALL KEY PARAMETERS ARE IN settings.txt File
         ORIGINAL VALUES:
@@ -28,16 +31,11 @@ macro "Main"{
 ===============================================================================
 */
 
-    //Remove all existing ROI
-    //Done first to have the ROI Manger window open so open/save options
-    // work properly on FIJI on Batch Mode
+    //Clear all remaining ROI
     roiManager("reset");
 
+    //Inactivate display
     setBatchMode(true);
-
-    /*
-        WELCOME AND SO
-    */
 
     //Close all remaining images
     PathM1 = getDirectory("macros");
@@ -45,6 +43,11 @@ macro "Main"{
     PathM1 += "Close_Images.java";
     runMacro(PathM1);
 
+    //Legal Hello World
+    Dialog.create("Welcome to PLA quantification");
+    Dialog.addMessage("Version " + version);
+    Dialog.addMessage("Cluet David\nResearch Ingeneer,PHD\nCNRS, ENS-Lyon, LBMC");
+    Dialog.show();
 
     //Retrieve folder to explore
     myTitle = "PLEASE CHOOSE THE FOLDER CONTAINING THE FILES TO PROCESS"
@@ -119,6 +122,9 @@ macro "Main"{
 
     //Loop of analysis of ALL images
     for (im=1; im<myFiles.length; im++){
+
+        //Clear all roi if not done properly before
+        roiManager("reset");
 
         //Path of the current image
         Path = myFiles[im];

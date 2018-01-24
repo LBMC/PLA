@@ -24,13 +24,21 @@ macro "Treat_RFP"{
 
     //Path to Nuclei ROIset
     PathNUCset = OUTFolder;
-    PathNUCset += myImageName + "_Nuclei.zip";
+    PathNUCset += myImageName + "_Nuclei.txt";
+
+    //Path to Nuclei ROIset
+    PathNUCsetzip = OUTFolder;
+    PathNUCsetzip += myImageName + "_Nuclei.zip";
 
     //reset to create the set of Nuclei and PLA
     roiManager("Reset");
     PathPLAset = OUTFolder;
-    PathPLAset += myImageName + "_Nuclei-PLA.zip";
+    PathPLAset += myImageName + "_Nuclei-PLA.txt";
 
+    //reset to create the set of Nuclei and PLA
+    roiManager("Reset");
+    PathPLAsetzip = OUTFolder;
+    PathPLAsetzip += myImageName + "_Nuclei-PLA.zip";
 
     Windows = newArray("RFP", "RFPori");
 
@@ -53,7 +61,7 @@ macro "Treat_RFP"{
 
         //Get Current Nucleus properties
         roiManager("Reset");
-        roiManager("Open", PathNUCset);
+        ROIopen(PathNUCset);
         roiManager("Select", nucleus);
         myNucleusName = Roi.getName();
         List.setMeasurements;
@@ -86,11 +94,10 @@ macro "Treat_RFP"{
         //Update the NUclei and PLA ROIset
         roiManager("Reset");
         if (File.exists(PathPLAset)==1){
-            roiManager("Open", PathPLAset);
+            ROIopen(PathPLAset);
         }
 
         nRoi = roiManager("count");
-
         //add the current nucleus
         makeSelection("polygon", NUCXpoints, NUCYpoints);
         roiManager("Add");
@@ -136,7 +143,9 @@ macro "Treat_RFP"{
         PercTot = d2s(100*(STot/SN), 2);
 
         //Save new ROI
-        roiManager("Save", PathPLAset);
+        ROIsave(PathPLAset, "overwrite");
+        //roiManager("Save", PathPLAset);
+
         roiManager("Reset");
 
         //Update the Nucleus line
@@ -167,6 +176,7 @@ macro "Treat_RFP"{
 
 
     //Draw all nuclei on RFP
+    ROIopen(PathNUCset);
     for(nucleus=0;
         nucleus<roiManager("count");
         nucleus++){
@@ -192,4 +202,96 @@ macro "Treat_RFP"{
         run("Draw");
     }
 
+    //Clean the mess with the ROI Files
+
+    roiManager("Save", PathNUCsetzip);
+    roiManager("reset");
+
+    ROIopen(PathPLAset);
+    roiManager("Save", PathPLAsetzip);
+    roiManager("reset");
+
+    d = File.delete(PathNUCset);
+    d = File.delete(PathPLAset);
+
+
+
+/*
+===============================================================================
+                            FUNCTIONS
+===============================================================================
+*/
+
+function ROIopen(path){
+    T = File.openAsString(path);
+
+    //Separate the ROI
+    ROI = split(T, "\n");
+
+    for(roi=0; roi<ROI.length; roi++){
+        segments = split(ROI[roi], "*");
+        Nom = segments[0];
+        xpoints = split(segments[1], ";");
+        ypoints = split(segments[2], ";");
+        makeSelection("polygon", xpoints, ypoints);
+        roiManager("Add");
+        roiManager("Select", roiManager("count")-1);
+        roiManager("Rename", Nom);
+    }
 }
+
+/*
+===============================================================================
+*/
+
+function ROIsave(path, option){
+    /*
+        Recognized options:
+        -"overwrite"
+        -"append"
+
+        Structure of the roi:
+        "Name*X0;X1;...;Xn*Y0;Y1;...;Yn"
+    */
+
+    //create the file if not existing
+    if(File.exists(path)==0){
+        f = File.open(path);
+        File.close(f);
+    }
+
+    //clear the file if overwriting is ordered
+    if(option=="overwrite"){
+        f = File.open(path);
+        File.close(f);
+    }
+
+    //Loop of saving the ROIs
+    for(roi=0; roi<roiManager("count"); roi++){
+        roiManager("Select", roi);
+        Roi.getCoordinates(xpoints, ypoints);
+        Nom = Roi.getName();
+
+        //Convert coordinates arrays as a single string
+        X = "";
+        Y = "";
+
+        for(x=0; x<xpoints.length; x++){
+            X += "" + xpoints[x];
+            Y += "" + ypoints[x];
+
+            if(x!=xpoints.length-1){
+                X += ";";
+                Y += ";";
+            }
+        }
+
+        //Append the roi to the file
+        File.append(Nom + "*" + X + "*" + Y,
+                    path);
+    }
+}
+
+
+
+}//END MACRO

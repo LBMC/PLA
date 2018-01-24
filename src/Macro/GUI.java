@@ -137,7 +137,10 @@ macro "GUI"{
     MSG = "" + (myFiles.length-1) + " files have been detected.\n";
     MSG += "See listing below:";
     Dialog.addMessage(MSG);
-    Dialog.addChoice("Files:", NameFiles, NameFiles[0]);
+
+    if (NameFiles.length>0){
+        Dialog.addChoice("Files:", NameFiles, NameFiles[0]);
+    }
 
     if (newP != P){
         MSG1 = "Your settings are differents from Settings.txt" +"\n";
@@ -149,7 +152,10 @@ macro "GUI"{
     }
     Dialog.show();
 
-    fileN = Dialog.getChoice();
+    if (NameFiles.length>0){
+        fileN = Dialog.getChoice();
+    }
+    
     if (newP != P){
         option = Dialog.getChoice();
         if (option == "Update my settings"){
