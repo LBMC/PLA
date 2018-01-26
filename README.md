@@ -1,9 +1,9 @@
 Automated Detection of PLA
 ===
 
-**Version 1.0 Available**
+**Version 1.1 Available**
 --
-2018/01/24
+2018/01/26
 
 
 |![Example original](doc/Original.jpg)|![Example treated](doc/Treated.jpg)|
