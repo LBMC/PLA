@@ -8,7 +8,9 @@ macro "Treat_DAPI"{
     MinSize = parseFloat(Arguments[2]);
     MaxSize = parseFloat(Arguments[3]);
     MaxSizeSingle = parseFloat(Arguments[4]);
-    MinCircSingle= parseFloat(Arguments[5]);
+    MinCircSingle = parseFloat(Arguments[5]);
+    myProgress = parseFloat(Arguments[6]);
+    showProgress(myProgress);
 
     //Color map for drawing
     //Red
@@ -21,6 +23,7 @@ macro "Treat_DAPI"{
     Windows = newArray("DAPI", "DAPIori");
 
     for (w=0; w<Windows.length; w++){
+        showProgress(myProgress);
         selectWindow(Windows[w]);
         //Remove Background
         run("Subtract Background...", "rolling=100");
@@ -99,6 +102,7 @@ macro "Treat_DAPI"{
     resetThreshold();
 
     for (w=0; w<Windows.length; w++){
+        showProgress(myProgress);
         selectWindow(Windows[w]);
         run("Blue");
         run("RGB Color");
@@ -110,7 +114,7 @@ macro "Treat_DAPI"{
     for(nucleus=0;
         nucleus<roiManager("count");
         nucleus++){
-
+        showProgress(myProgress);
         selectWindow("DAPI");
         roiManager("Select", nucleus);
         /*
@@ -168,6 +172,7 @@ function ROIsave(path, option){
 
     //Loop of saving the ROIs
     for(roi=0; roi<roiManager("count"); roi++){
+        showProgress(myProgress);
         roiManager("Select", roi);
         Roi.getCoordinates(xpoints, ypoints);
         Nom = Roi.getName();

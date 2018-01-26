@@ -8,7 +8,7 @@ macro "Treat_RFP"{
     MinSizePLA = parseFloat(Arguments[2]);
     MaxSizePLA = parseFloat(Arguments[3]);
     PathReport = Arguments[4];
-
+    myProgress = parseFloat(Arguments[5]);
 
     //Color map for drawing
     //Red
@@ -47,6 +47,7 @@ macro "Treat_RFP"{
     Windows = newArray("RFP", "RFPori");
 
     for (w=0; w<Windows.length; w++){
+        showProgress(myProgress);
         selectWindow(Windows[w]);
         //Remove Background
         run("Subtract Background...", "rolling=100");
@@ -59,7 +60,7 @@ macro "Treat_RFP"{
     run("RGB Color");
 
     for (nucleus = 0; nucleus<Nnuclei; nucleus++){
-
+        showProgress(myProgress);
         selectWindow("RFP");
 
         //Get Current Nucleus properties
@@ -127,6 +128,7 @@ macro "Treat_RFP"{
         nPLA = 0;
         STot = 0;
         for (pla = nRoi + 1; pla < roiManager("count"); pla++){
+            showProgress(myProgress);
             nPLA += 1;
             roiManager("Select", pla);
             List.setMeasurements;
@@ -171,6 +173,7 @@ macro "Treat_RFP"{
     resetThreshold();
 
     for (w=0; w<Windows.length; w++){
+        showProgress(myProgress);
         selectWindow(Windows[w]);
         run("Red");
         run("RGB Color");
@@ -183,7 +186,7 @@ macro "Treat_RFP"{
     for(nucleus=0;
         nucleus<roiManager("count");
         nucleus++){
-
+        showProgress(myProgress);
         selectWindow("RFP");
         roiManager("Select", nucleus);
         /*
@@ -216,7 +219,7 @@ macro "Treat_RFP"{
 
     d = File.delete(PathNUCset);
     d = File.delete(PathPLAset);
-
+    showProgress(myProgress);
 
 
 /*
@@ -232,6 +235,7 @@ function ROIopen(path){
     ROI = split(T, "\n");
 
     for(roi=0; roi<ROI.length; roi++){
+        showProgress(myProgress);
         segments = split(ROI[roi], "*");
         Nom = segments[0];
         xpoints = split(segments[1], ";");
@@ -270,6 +274,7 @@ function ROIsave(path, option){
 
     //Loop of saving the ROIs
     for(roi=0; roi<roiManager("count"); roi++){
+        showProgress(myProgress);
         roiManager("Select", roi);
         Roi.getCoordinates(xpoints, ypoints);
         Nom = Roi.getName();

@@ -122,6 +122,9 @@ macro "Main"{
 
     //Loop of analysis of ALL images
     for (im=1; im<myFiles.length; im++){
+        //First line is empty
+        myProgress = im/(myFiles.length-1);
+        showProgress(myProgress);
 
         //Clear all roi if not done properly before
         roiManager("reset");
@@ -164,24 +167,26 @@ macro "Main"{
         run("Duplicate...", "title=RFPori");
 
     //Process the DAPI image
-
+        showProgress(myProgress);
         ARG1 = OUTFolder + "\t";
         ARG1 += myImageName + "\t";
         ARG1 += "" + MinSize + "\t";
         ARG1 += "" + MaxSize + "\t";
         ARG1 += "" + MaxSizeSingle + "\t";
-        ARG1 += "" + MinCircSingle;
+        ARG1 += "" + MinCircSingle +"\t";
+        ARG1 += "" + myProgress;
 
         runMacro(PathMACRO + "Treat_DAPI.java",
                     ARG1);
 
     //Process the RFP image
-
+        showProgress(myProgress);
         ARG2 = OUTFolder + "\t";
         ARG2 += myImageName + "\t";
         ARG2 += "" + MinSizePLA + "\t";
         ARG2 += "" + MaxSizePLA + "\t";
-        ARG2 += PathFolderInput + myResults;
+        ARG2 += PathFolderInput + myResults + "\t";
+        ARG2 += "" + myProgress;
 
         runMacro(PathMACRO + "Treat_RFP.java",
                     ARG2);
