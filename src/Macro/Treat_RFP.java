@@ -18,10 +18,6 @@ macro "Treat_RFP"{
     //Blue
     CmapB = newArray(180, 14, 44, 40, 189, 75, 194, 225, 34, 207);
 
-
-    //get The number of found Nuclei
-    Nnuclei = roiManager("count");
-
     //Path to Nuclei ROIset
     PathNUCset = OUTFolder;
     PathNUCset += myImageName + "_Nuclei.txt";
@@ -30,15 +26,23 @@ macro "Treat_RFP"{
     PathNUCsetzip = OUTFolder;
     PathNUCsetzip += myImageName + "_Nuclei.zip";
 
-    //reset to create the set of Nuclei and PLA
-    roiManager("Reset");
+    //Create the set of Nuclei and PLA
     PathPLAset = OUTFolder;
     PathPLAset += myImageName + "_Nuclei-PLA.txt";
 
-    //reset to create the set of Nuclei and PLA
-    roiManager("Reset");
+    //Create the set of Nuclei and PLA
     PathPLAsetzip = OUTFolder;
     PathPLAsetzip += myImageName + "_Nuclei-PLA.zip";
+
+
+
+    roiManager("Reset");
+    ROIopen(PathNUCset);
+
+    //get The number of found Nuclei
+    Nnuclei = roiManager("count");
+    roiManager("Reset");
+
 
     Windows = newArray("RFP", "RFPori");
 
@@ -53,7 +57,6 @@ macro "Treat_RFP"{
     //Prepare window RFP2 for immediate drawing of the nuclei and PLA
     selectWindow("RFP2");
     run("RGB Color");
-
 
     for (nucleus = 0; nucleus<Nnuclei; nucleus++){
 
@@ -115,7 +118,6 @@ macro "Treat_RFP"{
         //The found Particles are added to the roiManager
         CMD1 += " add";
         run("Analyze Particles...", CMD1);
-
         //Draw the Particles
         selectWindow("RFP2");
 
@@ -177,6 +179,7 @@ macro "Treat_RFP"{
 
     //Draw all nuclei on RFP
     ROIopen(PathNUCset);
+
     for(nucleus=0;
         nucleus<roiManager("count");
         nucleus++){
@@ -253,7 +256,6 @@ function ROIsave(path, option){
         Structure of the roi:
         "Name*X0;X1;...;Xn*Y0;Y1;...;Yn"
     */
-
     //create the file if not existing
     if(File.exists(path)==0){
         f = File.open(path);

@@ -31,11 +31,11 @@ macro "Main"{
 ===============================================================================
 */
 
-    //Clear all remaining ROI
-    roiManager("reset");
-
     //Inactivate display
     setBatchMode(true);
+
+    //Clear all remaining ROI
+    roiManager("reset");
 
     //Close all remaining images
     PathM1 = getDirectory("macros");
