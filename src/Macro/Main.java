@@ -50,8 +50,14 @@ macro "Main"{
     Dialog.show();
 
     //Retrieve folder to explore
-    myTitle = "PLEASE CHOOSE THE FOLDER CONTAINING THE FILES TO PROCESS"
+    myTitle = "PLEASE CHOOSE THE FOLDER CONTAINING THE FILES TO PROCESS";
     PathFolderInput = getDirectory(myTitle);
+
+    //Retrieve folder to save CSV
+    myTitle = "PLEASE CHOOSE THE FOLDER TO STORE THE CSV BACKUP";
+    PathFolderbkp = getDirectory(myTitle);
+
+
 
     //Generate Finger Print
     getDateAndTime(year,
@@ -233,6 +239,11 @@ macro "Main"{
     //Convert txt to csv
     Conv = File.rename(PathFolderInput + myResults,
                         PathFolderInput + FP + "Results.csv");
+
+    myCSV = File.openAsString(PathFolderInput + FP + "Results.csv");
+
+
+    File.saveString(myCSV, PathFolderbkp + FP + "Results.csv");
 
     waitForUser("PLA analysis is over.");
 
