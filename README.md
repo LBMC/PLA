@@ -1,16 +1,38 @@
 Automated Detection of PLA
 ===
 
-**Version 1.1 Available**
---
-2018/01/26
 
+Introduction
+---
+
+The `PLA` macro for the program ImageJ ([Schneider et al. 2012](https://www.ncbi.nlm.nih.gov/pmc/articles/PMC5554542/)) is based on a previously released macro ([NUKE-BREAK](https://github.com/LBMC/NUKE-BREAK), [Herbette et al. 2017](https://www.sciencedirect.com/science/article/pii/S1568786417302707?via%3Dihub)) and optimized to detect **Proximity Ligation Assay** foci within nuclei of human cell. The macro was designed to automatically detect and process batches of microscope coupled acquisitions. To this end, key parameters for nuclei and foci detection (minimum and maximum surface and circularity) have been optimized.
+
+
+The `PLA` macro explores recursively a specific folder and treat all images with the correct extension (chosen by the user).
 
 |![Example original](doc/Original.jpg)|![Example treated](doc/Treated.jpg)|
 |-------------------------------------|-----------------------------------|
 |**ORIGINAL**   |**TREATED**   |
 
-The `PLA` macro explores recursively a specific folder and treat all images with the correct extension (chosen by the user).
+The macro will generate a listing of couples of acquisition images using user defined `DAPI.extension` and `PLA.extension`.
+Using the GUI, the user can specify the `extensions` as the main analysis parameters:
+- Minimum Surface for initial nuclei detection
+- Maximum Surface for initial nuclei detection
+- Maximum Surface of a single nucleus (for nuclei aggregates identification and splitting)
+- Minimum Circularity of single nucleus (for nuclei aggregates identification and splitting)
+- Minimum Surface for PLA foci
+- Maximum Surface for PLA foci
+
+
+**These parameters can be changed and saved, so the program can be adapted to specific acquisition resolution and/or experimental conditions affecting the geometry of the nuclei and the PLA foci.**
+
+The images couples are then processed as follows:
+1. The noise of both `DAPI` and `PLA` images is independently removed using the [“substract background” function](http://ieeexplore.ieee.org/document/1654163/?reload=true).
+2. The `DAPI` channel is then used to detect the Nuclei using the ["Huang" thresholding method](https://pdfs.semanticscholar.org/8906/64d6e7861253bd8c36d0e9079f96c9f22d67.pdf) and the **initial Nuclei** `Minimum surface` and `Maximum surface`  parameters.
+3. The aggregates of nuclei are subsequently identified using the **single Nucleui** `Maximum surface` and `Minimum Circularity`. Detected ROI fitting with these parameters are then splitted using the ["Watershed" algorithm](https://www.spiedigitallibrary.org/conference-proceedings-of-spie/1360/1/Determining-watersheds-in-digital-pictures-via-flooding-simulations/10.1117/12.24211.short?SSO=1).
+4. `PLA` foci are then detected independently for every **isolated nucleus**, using the [“Max-Entropy” threshold method](https://www.sciencedirect.com/science/article/pii/0734189X85901252) and the foci `Minimum Surface` and `Maximum Surface` parameters.
+5. Finally, the program collects the size of all nuclei and foci to generate a `Results.csv` table (see below).
+
 
 Input
 ---
@@ -43,17 +65,58 @@ The macro generate several files and folders that have all the same Fingerprint 
 
 
 
-**Authors**
+**Contributors**
 --
 
 | ![LBMC Logo](doc/Logo_LBMC.jpg) ![CNRS Logo](doc/Logo_cnrs.jpg) ![ENS Logo](doc/Logo_ens.jpg) ||
 |-----------------------------|------------|
 |**CLUET David**|     [david.cluet@ens-lyon.fr](david.cluet@ens-lyon.fr)|
+|**TERRONE Sophie**|     [sophie.terrone@ens-lyon.fr](sophie.terrone@ens-lyon.fr)|
+
+
+**Publication**
+--
+
+
+**THE RNA HELICASE DDX17 CONTROLS THE TRANSCRIPTIONAL
+ACTIVITY OF REST AND THE EXPRESSION OF PRONEURAL
+MICRORNAS IN NEURONAL DIFFERENTIATION.**
+
+Marie-Pierre Lambert, Sophie Terrone, Guillaume Giraud, Clara Benoit-Pilven, David
+Cluet, Valérie Combaret, Franck Mortreux, Didier Auboeuf and Cyril F.Bourgeois
+
+**Nucleic Acids Research** (under revision)
 
 
 **Requirements**
 --
 The `PLA` macro requires `ImageJ v1.49g` or higher ([Download](https://imagej.nih.gov/ij/download.html)).
+
+**Files**
+--
+- [] **src**
+    - README.md
+    - LICENSE
+    - `Installation.ijm`
+    - `Installation_FIJI.ijm`
+    - [] **doc**
+        - *FIJI.jpg*
+        - *IJ.jpg*
+        - *Logo_cnrs.jpg*
+        - *Logo_ens.jpg*
+        - *Logo_LBMC.jpg*
+        - *Original.jpg*
+        - *Treated.jpg*
+    - [] **macro**
+        - `Close_Image.java`
+        - `Command_Line.txt`
+        - `Explorer.java`
+        - `GUI.java`
+        - `Main.java`
+        - `Settings.txt`
+        - `Treat_DAPI.java`
+        - `Treat_RFP.java`
+
 
 **Installation**
 --
