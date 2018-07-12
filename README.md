@@ -82,10 +82,11 @@ The macro generate several files and folders that have all the same Fingerprint 
 ACTIVITY OF REST AND THE EXPRESSION OF PRONEURAL
 MICRORNAS IN NEURONAL DIFFERENTIATION.**
 
+
 Marie-Pierre Lambert, Sophie Terrone, Guillaume Giraud, Clara Benoit-Pilven, David
 Cluet, Valérie Combaret, Franck Mortreux, Didier Auboeuf and Cyril F.Bourgeois
 
-**Nucleic Acids Research** (under revision)
+[*Nucleic Acids Res. 2018 Jun 21. doi: 10.1093/nar/gky545.*](https://academic.oup.com/nar/advance-article/doi/10.1093/nar/gky545/5042026)
 
 License
 --
